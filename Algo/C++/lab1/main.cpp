@@ -1,8 +1,6 @@
 #include <chrono>
-#include <cstddef>
 #include <iostream>
 #include <cstdlib>
-#include <ctime>
 
 
 struct List {
@@ -14,28 +12,75 @@ struct List {
 };
 
 // Function to generate a random set of characters
-void GenerateRandomSet(char* S)
+void set_fill_random(wchar_t (&result)[34]);
+
+bool contains(const wchar_t (&arr)[34], wchar_t elem);
+bool contains(const List* l, wchar_t elem);
+
+void print_set(const wchar_t (&set)[34]);
+
+void calc_set(const wchar_t (&A)[34], const wchar_t (&B)[34],
+		const wchar_t (&C)[34], const wchar_t (&D)[34],
+		wchar_t (&out)[34]);
+
+int main()
 {
-	const char universe[] = "абвгдежзийклмнопрстуфхцчшщъыьэюя";
-	int i = 0;
-	for (int k = 0; universe[k] != '\0'; k++) {
-		if (rand() % 2 == 1) {
-			S[i++] = universe[k];
-		}
-	}
-	S[i] = '\0';
+	// For cyrillic letters
+	std::locale::global(std::locale(""));
+	std::wcout.imbue(std::locale(""));
+	// Random generation
+	srand((unsigned)time(NULL));
+	// Time benchmarking
+	const auto t_start = std::chrono::high_resolution_clock::now();
+
+	// MAIN LOGIC
+	wchar_t E[34];
+	// Example
+	wchar_t A[34] = L"бвгде";
+	wchar_t B[34] = L"авгде";
+	wchar_t C[34] = L"абгде";
+	wchar_t D[34] = L"абвде";
+	// Example from input
+	
+	// Random generated examples
+	// wchar_t A[34], B[34], C[34], D[34];
+	// set_fill_random(A);
+	// set_fill_random(B);
+	// set_fill_random(C);
+	// set_fill_random(D);
+
+	std::wcout << "Generated sets:\n";
+	print_set(A);
+	print_set(B);
+	print_set(C);
+	print_set(D);
+
+	calc_set(A, B, C, D, E);
+
+	std::wcout << "Resulting set E: ";
+	print_set(E);
+	// END
+
+	const auto t_end = std::chrono::high_resolution_clock::now();
+	const double time_elapsed = std::chrono::duration<double, std::milli>(
+			t_end - t_start).count();
+	std::wcout << "Time elapsed: " << time_elapsed << '\n'; 
 }
 
-bool contains(const List* l, char elem)
+// Function to generate a random set of characters
+void set_fill_random(wchar_t (&result)[34])
 {
-	for (; l != nullptr; l = l->next) {
-		if (l->el == elem) {
-			return true;
+	const wchar_t alphabet[] = L"абвгдеёжзийклмнопрстуфхцчшщъыьэюя";
+	int i = 0;
+	for (const wchar_t& letter : alphabet) {
+		if (rand() % 2 == 1) {
+			result[i++] = letter;
 		}
 	}
-	return false;
+	result[i] = '\0';
 }
-bool contains(const char* arr, char elem)
+
+bool contains(const wchar_t (&arr)[34], wchar_t elem)
 {
 	for (int i = 0; arr[i] != '\0'; i++) {
 		if (arr[i] == elem) {
@@ -44,60 +89,33 @@ bool contains(const char* arr, char elem)
 	}
 	return false;
 }
-
-// Function to calculate the set of characters that are present in A, B, and C but not in D
-void CalcSetArr(const char* A, const char* B, const char* C, const char* D, char* E)
+bool contains(const List* l, wchar_t elem)
 {
-	int i = 0;
-	for (int j = 0; A[j] != '\0'; j++) 
-	{
-		char ch = A[j];
-		if (contains(B, ch) && contains(C, ch) && !contains(D, ch)) 
-		{
-			if (!contains(E, ch)) 
-			{
-				E[i] = ch;
-				i++;
-				E[i] = '\0';
-			}	
+	for (; l != nullptr; l = l->next) {
+		if (l->el == elem) {
+			return true;
 		}
 	}
+	return false;
 }
 
-int main()
+void print_set(const wchar_t (&set)[34])
 {
-	/* const char* arr = "ABOBA";
-	const List* l = new List('E'); */
+	for (int i = 0; set[i] != '\0'; i++) {
+		std::wcout << set[i];
+	}
+	std::wcout << '\n';
+}
 
-	// Test data
-	/* const char* A = "абвгде";
-    const char* B = "бвгж";
-    const char* C = "вгдз";
-    const char* D = "г"; */
-
-	char E[100], A[100], B[100], C[100], D[100];
-
-	/* std::cout << contains(arr, 'E') << ' ' << contains(l, 'E') << '\n'; */
-
-	const auto t_start = std::chrono::high_resolution_clock::now();
-
-	GenerateRandomSet(A);
-	GenerateRandomSet(B);
-	GenerateRandomSet(C);
-	GenerateRandomSet(D);
-
-	std::cout << "Generated sets:\n";
-    std::cout << "A = " << A << '\n';
-    std::cout << "B = " << B << '\n';
-    std::cout << "C = " << C << '\n';
-    std::cout << "D = " << D << '\n';
-
-	CalcSetArr(A, B, C, D, E);
-
-	std::cout << "Resulting set E: " << E << '\n';
-
-	const auto t_end = std::chrono::high_resolution_clock::now();
-	const double time_elapsed = std::chrono::duration<double, std::milli>(
-			t_end - t_start).count();
-	std::cout << "Time elapsed: " << time_elapsed << '\n'; 
+void calc_set(const wchar_t (&A)[34], const wchar_t (&B)[34],
+		const wchar_t (&C)[34], const wchar_t (&D)[34],
+		wchar_t (&out)[34])
+{
+	int i = 0;
+	for (int j = 0; A[j] != '\0'; j++) {
+		if (contains(B, A[j]) && contains(C, A[j]) && !contains(D, A[j])) {
+			out[i++] = A[j];
+		}
+	}
+	out[i] = '\0';
 }

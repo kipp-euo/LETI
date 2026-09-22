@@ -1,4 +1,5 @@
 #include <chrono>
+#include <cstddef>
 #include <cstdint>
 #include <ctime>
 #include <clocale>
@@ -19,25 +20,33 @@ void input_set(wchar_t (&result)[33], const wchar_t* name);
 
 void print_set(const wchar_t (&set)[33]);
 void print_set(const List* set);
+void print_set(const bool (&set)[33]);
 void print_set(uint64_t set);
 
 void set_fill_random(wchar_t (&result)[33]);
 
 List* arr_to_list(const wchar_t (&arr)[33]);
+void arr_to_bitarr(const wchar_t (&arr)[33], bool (&out)[33]);
 uint64_t arr_to_qword(const wchar_t (&arr)[33]);
 
 bool contains(const wchar_t (&arr)[33], wchar_t elem);
 bool contains(const List* l, wchar_t elem);
+bool contains(const bool (&arr)[33], size_t elem);
 
 void calc_set(const wchar_t (&A)[33], const wchar_t (&B)[33],
 		const wchar_t (&C)[33], const wchar_t (&D)[33],
 		wchar_t (&out)[33]);
 List* calc_set(const List* A, const List* B, const List* C, const List* D);
+void calc_set(const bool (&A)[33], const bool (&B)[33],
+		const bool (&C)[33], const bool (&D)[33],
+		bool (&out)[33]);
 uint64_t calc_set(uint64_t A, uint64_t B, uint64_t C, uint64_t D);
 
 void benchmark(const wchar_t (&A)[33], const wchar_t (&B)[33],
 		const wchar_t (&C)[33], const wchar_t (&D)[33]);
 void benchmark(const List* A, const List* B, const List* C, const List* D);
+void benchmark(const bool (&A)[33], const bool (&B)[33],
+		const bool (&C)[33], const bool (&D)[33]);
 void benchmark(uint64_t A, uint64_t B, uint64_t C, uint64_t D);
 
 
@@ -90,6 +99,15 @@ int main()
 
 	benchmark(lA, lB, lC, lD);
 
+	// Bit arrays
+	bool baA[33], baB[33], baC[33], baD[33];
+	arr_to_bitarr(A, baA);
+	arr_to_bitarr(B, baB);
+	arr_to_bitarr(C, baC);
+	arr_to_bitarr(D, baD);
+
+	benchmark(baA, baB, baC, baD);
+
 	// Machine words
 	const uint64_t bA = arr_to_qword(A);
 	const uint64_t bB = arr_to_qword(B);
@@ -107,7 +125,7 @@ void input_set(wchar_t (&result)[33], const wchar_t* name)
 
 void print_set(const wchar_t (&set)[33])
 {
-	for (int i = 0; set[i] != '\0'; i++) {
+	for (size_t i = 0; set[i] != '\0'; i++) {
 		std::wcout << set[i];
 	}
 	std::wcout << '\n';
@@ -119,9 +137,18 @@ void print_set(const List* set)
 	}
 	std::wcout << '\n';
 }
+void print_set(const bool (&set)[33])
+{
+	for (size_t i = 0; i < 33; i++) {
+		if (set[i]) {
+			std::wcout << alphabet[i];
+		}
+	}
+	std::wcout << '\n';
+}
 void print_set(uint64_t set)
 {
-	for (int i = 0; i < 33; i++) {
+	for (size_t i = 0; i < 33; i++) {
 		if ((set >> i) & 1) {
 			std::wcout << alphabet[i];
 		}
@@ -131,7 +158,7 @@ void print_set(uint64_t set)
 
 void set_fill_random(wchar_t (&result)[33])
 {
-	int i = 0;
+	size_t i = 0;
 	for (const wchar_t& letter : alphabet) {
 		if (rand() % 2 == 1) {
 			result[i++] = letter;
@@ -145,7 +172,7 @@ List* arr_to_list(const wchar_t (&arr)[33])
 	List* head = nullptr;
 	List* tail = nullptr;
 
-	for (int i = 0; arr[i] != L'\0'; i++) {
+	for (size_t i = 0; arr[i] != L'\0'; i++) {
 		List* node = new List(arr[i]);
 		if (!head) {
 			head = node;
@@ -156,6 +183,15 @@ List* arr_to_list(const wchar_t (&arr)[33])
 		}
 	}
 	return head;
+}
+void arr_to_bitarr(const wchar_t (&arr)[33], bool (&out)[33])
+{
+	for (bool& elem : out) {
+		elem = false;
+	}
+	for (size_t i = 0; arr[i] != '\0'; i++) {
+		out[arr[i] - alphabet[0]] = true;
+	}
 }
 uint64_t arr_to_qword(const wchar_t (&arr)[33])
 {
@@ -168,7 +204,7 @@ uint64_t arr_to_qword(const wchar_t (&arr)[33])
 
 bool contains(const wchar_t (&arr)[33], wchar_t elem)
 {
-	for (int i = 0; arr[i] != '\0'; i++) {
+	for (size_t i = 0; arr[i] != '\0'; i++) {
 		if (arr[i] == elem) {
 			return true;
 		}
@@ -189,8 +225,8 @@ void calc_set(const wchar_t (&A)[33], const wchar_t (&B)[33],
 		const wchar_t (&C)[33], const wchar_t (&D)[33],
 		wchar_t (&out)[33])
 {
-	int i = 0;
-	for (int j = 0; C[j] != '\0'; j++) {
+	size_t i = 0;
+	for (size_t j = 0; C[j] != '\0'; j++) {
 		if ((contains(A, C[j]) || contains(B, C[j])) && !contains(D, C[j])) {
 			out[i++] = C[j];
 		}
@@ -216,6 +252,14 @@ List* calc_set(const List* A, const List* B, const List* C, const List* D)
 		}
 	}
 	return head;
+}
+void calc_set(const bool (&A)[33], const bool (&B)[33],
+		const bool (&C)[33], const bool (&D)[33],
+		bool (&out)[33])
+{
+	for (size_t i = 0; i < 33; i++) {
+		out[i] = (A[i] || B[i]) && C[i] && (!D[i]);
+	}
 }
 uint64_t calc_set(uint64_t A, uint64_t B, uint64_t C, uint64_t D)
 {
@@ -248,6 +292,22 @@ void benchmark(const List* A, const List* B, const List* C, const List* D)
 	double time_elapsed = std::chrono::duration<double, std::milli>(
 			t_end - t_start).count();
 	std::wcout << L"Time elapsed (list): " << time_elapsed << '\n';
+
+	std::wcout << L"Resulting set E: ";
+	print_set(E);
+}
+void benchmark(const bool (&A)[33], const bool (&B)[33],
+		const bool (&C)[33], const bool (&D)[33])
+{
+	auto t_start = std::chrono::high_resolution_clock::now();
+
+	bool E[33];
+	calc_set(A, B, C, D, E);
+
+	auto t_end = std::chrono::high_resolution_clock::now();
+	double time_elapsed = std::chrono::duration<double, std::milli>(
+			t_end - t_start).count();
+	std::wcout << L"Time elapsed (Bit array): " << time_elapsed << '\n';
 
 	std::wcout << L"Resulting set E: ";
 	print_set(E);

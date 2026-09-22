@@ -53,16 +53,18 @@ void benchmark(uint64_t A, uint64_t B, uint64_t C, uint64_t D);
 int main()
 {
 	// For cyrillic letters
-	std::locale::global(std::locale(""));
-	std::wcout.imbue(std::locale(""));
+	/* std::locale::global(std::locale(""));
+	std::wcout.imbue(std::locale("")); */
+
+	setlocale(LC_ALL, "Russian");
 
 	srand((unsigned)time(NULL));
 
 	// // Example
-	// wchar_t A[] = L"бвгде";
-	// wchar_t B[] = L"авгде";
-	// wchar_t C[] = L"абгде";
-	// wchar_t D[] = L"абвде";
+	wchar_t A[33] = L"аб";
+	wchar_t B[33] = L"аб";
+	wchar_t C[33] = L"ав";
+	wchar_t D[33] = L"бг";
 
 	// // Example from input
 	// wchar_t A[33], B[33], C[33], D[33];
@@ -72,11 +74,11 @@ int main()
 	// input_set(D, L"D");
 
 	// Random generated examples
-	wchar_t A[33], B[33], C[33], D[33];
-	set_fill_random(A);
-	set_fill_random(B);
-	set_fill_random(C);
-	set_fill_random(D);
+	//wchar_t A[33], B[33], C[33], D[33];
+	//set_fill_random(A);
+	//set_fill_random(B);
+	//set_fill_random(C);
+	//set_fill_random(D);
 
 	std::wcout << "Sets:\n";
 	std::wcout << "A = ";
@@ -227,8 +229,10 @@ void calc_set(const wchar_t (&A)[33], const wchar_t (&B)[33],
 {
 	size_t i = 0;
 	for (size_t j = 0; C[j] != '\0'; j++) {
-		if ((contains(A, C[j]) || contains(B, C[j])) && !contains(D, C[j])) {
-			out[i++] = C[j];
+		if ((contains(A, C[j]) && contains(B, C[j])) && !contains(D, C[j])) {
+			if (!contains(out, C[j])) {
+                out[i++] = C[j];
+            }
 		}
 	}
 	out[i] = '\0';
@@ -240,14 +244,16 @@ List* calc_set(const List* A, const List* B, const List* C, const List* D)
 
 	for (const List* p = C; p != nullptr; p = p->next) {
 		wchar_t ch = p->el;
-		if ((contains(A, ch) || contains(B, ch)) && !contains(D, ch)) {
-			List* node = new List(ch);
-			if (!head) {
-				head = node;
-				tail = node;
-			} else {
-				tail->next = node;
-				tail = node;
+		if ((contains(A, ch) && contains(B, ch)) && !contains(D, ch)) {
+			if (!contains(head, ch)) {
+				List* node = new List(ch);
+				if (!head) {
+					head = node;
+					tail = node;
+				} else {
+					tail->next = node;
+					tail = node;
+				}
 			}
 		}
 	}
@@ -258,12 +264,12 @@ void calc_set(const bool (&A)[33], const bool (&B)[33],
 		bool (&out)[33])
 {
 	for (size_t i = 0; i < 33; i++) {
-		out[i] = (A[i] || B[i]) && C[i] && (!D[i]);
+		out[i] = A[i] && B[i] && C[i] && (!D[i]);
 	}
 }
 uint64_t calc_set(uint64_t A, uint64_t B, uint64_t C, uint64_t D)
 {
-	return (A | B) & C & (~D);
+	return A & B & C & (~D);
 }
 
 void benchmark(const wchar_t (&A)[33], const wchar_t (&B)[33],
@@ -305,7 +311,7 @@ void benchmark(const bool (&A)[33], const bool (&B)[33],
 	calc_set(A, B, C, D, E);
 
 	auto t_end = std::chrono::high_resolution_clock::now();
-	double time_elapsed = std::chrono::duration<double, std::milli>(
+	double time_elapsed = std::chrono::duration<double, std::milli>(	
 			t_end - t_start).count();
 	std::wcout << L"Time elapsed (Bit array): " << time_elapsed << '\n';
 

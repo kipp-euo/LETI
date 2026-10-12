@@ -1,4 +1,4 @@
 g++ main.cpp \
-	-std=c++20 \
+	-std=c++11 \
 	-Werror -Wall -Wextra \
 	-o main.exe

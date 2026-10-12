@@ -1,0 +1,1 @@
+memberSearchIndex = [{"p":"edu.java.lab2","c":"PostWorker","l":"main(String[])","u":"main(java.lang.String[])"},{"p":"edu.java.lab2","c":"PostWorker","l":"PostWorker()","u":"%3Cinit%3E()"},{"p":"edu.java.lab2","c":"PostWorker","l":"show()"}];updateSearchResults();

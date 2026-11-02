@@ -21,177 +21,171 @@ import javax.swing.table.DefaultTableModel;
  * @version 2.0
  */
 public class PostWorker {
-    private JFrame mainFrame;
-    private JToolBar toolBar;
-    private JButton openBtn;
-    private JButton saveBtn;
-    private JButton addBtn;
-    private JButton editBtn;
-    private JButton deleteBtn;
-    private JTable dataTable;
-    private DefaultTableModel tableModel;
-    private JScrollPane scrollPane;
-    private JPanel filterPanel;
-    private JComboBox<String> viewCombo;
-    private JTextField searchField;
-    private JButton searchBtn;
+	private JFrame mainFrame;
+	private JToolBar toolBar;
+	private JButton openBtn;
+	private JButton saveBtn;
+	private JButton addBtn;
+	private JButton editBtn;
+	private JButton deleteBtn;
+	private JTable dataTable;
+	private DefaultTableModel tableModel;
+	private JScrollPane scrollPane;
+	private JPanel filterPanel;
+	private JComboBox<String> viewCombo;
+	private JTextField searchField;
+	private JButton searchBtn;
 
-    /**
-     * Exception thrown when the user doesn't specify a name for a search
-     */
-    private class EmptySearchNameException extends Exception {
-        public EmptySearchNameException() {
-            super("Error: No name specified for a search");
-        }
-    }
+	/**
+	 * Exception thrown when the user doesn't specify a name for a search
+	 */
+	private class EmptySearchNameException extends Exception {
+		public EmptySearchNameException() {
+			super("Error: No name specified for a search");
+		}
+	}
 
-    /**
-     * Exception thrown when the user doesn't select a row before attempting to delete one
-     */
-    private class NoRowSelectedException extends Exception {
-        public NoRowSelectedException() {
-            super("Error: No row selected for deletion");
-        }
-    }
+	/**
+	 * Exception thrown when the user doesn't select a row before attempting to delete one
+	 */
+	private class NoRowSelectedException extends Exception {
+		public NoRowSelectedException() {
+			super("Error: No row selected for deletion");
+		}
+	}
 
-    /**
-     * Checks if the name for a search is valid.
-     * @ The search field
-     * @throws EmptySearchNameException No name was specified
-     * @throws NullPointerException The search field is null
-     */
-    private void checkSearchName(JTextField bName) throws EmptySearchNameException, NullPointerException {
-        if (bName == null) {
-            throw new NullPointerException();
-        }
-        String sName = bName.getText().trim();
-        if (sName.isEmpty() || sName.equals("Поиск по ФИО или издан...")) {
-            throw new EmptySearchNameException();
-        }
-    }
+	/**
+	 * Checks if the name for a search is valid.
+	 * @ The search field
+	 * @throws EmptySearchNameException No name was specified
+	 */
+	private void checkSearchName(JTextField bName) throws EmptySearchNameException {
+		String sName = bName.getText().trim();
+		if (sName.isEmpty() || sName.equals("Поиск по ФИО или издан...")) {
+			throw new EmptySearchNameException();
+		}
+	}
 
-    /**
-     * Checks if a row was selected before deletion
-     * @ The data table
-     * @throws NoRowSelectedException No row was selected
-     */
-    private void checkSelectedRow(JTable table) throws NoRowSelectedException {
-        if (table.getSelectedRow() == -1) {
-            throw new NoRowSelectedException();
-        }
-    }
+	/**
+	 * Checks if a row was selected before deletion
+	 * @ The data table
+	 * @throws NoRowSelectedException No row was selected
+	 */
+	private void checkSelectedRow(JTable table) throws NoRowSelectedException {
+		if (table.getSelectedRow() == -1) {
+			throw new NoRowSelectedException();
+		}
+	}
 
-    /**
-     * Creates the toolbar for the UI application.
-     * Implements functionality for the Add row (+) and Delete row (trash bin) buttons with exception handling.
-     */
-    private void create_toolbar() {
-        toolBar = new JToolBar("Панель управления");
-        openBtn = new JButton(new ImageIcon("./img/open.png"));
-        saveBtn = new JButton(new ImageIcon("./img/save.png"));
-        addBtn = new JButton(new ImageIcon("./img/add.png"));
-        editBtn = new JButton(new ImageIcon("./img/edit.png"));
-        deleteBtn = new JButton(new ImageIcon("./img/delete.png"));
+	/**
+	 * Creates the toolbar for the UI application.
+	 * Implements functionality for the Add row (+) and Delete row (trash bin) buttons with exception handling.
+	 */
+	private void create_toolbar() {
+		toolBar = new JToolBar("Панель управления");
+		openBtn = new JButton(new ImageIcon("./img/open.png"));
+		saveBtn = new JButton(new ImageIcon("./img/save.png"));
+		addBtn = new JButton(new ImageIcon("./img/add.png"));
+		editBtn = new JButton(new ImageIcon("./img/edit.png"));
+		deleteBtn = new JButton(new ImageIcon("./img/delete.png"));
 
-        openBtn.setToolTipText("Открыть файл данных");
-        saveBtn.setToolTipText("Сохранить изменения");
-        addBtn.setToolTipText("Добавить подписку/клиента");
-        editBtn.setToolTipText("Редактировать выбранную запись");
-        deleteBtn.setToolTipText("Удалить выбранную запись");
+		openBtn.setToolTipText("Открыть файл данных");
+		saveBtn.setToolTipText("Сохранить изменения");
+		addBtn.setToolTipText("Добавить подписку/клиента");
+		editBtn.setToolTipText("Редактировать выбранную запись");
+		deleteBtn.setToolTipText("Удалить выбранную запись");
 
-        addBtn.addActionListener(e -> {
-            String id = String.format("%04d", tableModel.getRowCount() + 1);
-            tableModel.addRow(new Object[]{id, "", "", "", ""});
-        });
+		addBtn.addActionListener(e -> {
+			String id = String.format("%04d", tableModel.getRowCount() + 1);
+			tableModel.addRow(new Object[]{id, "", "", "", ""});
+		});
 
-        deleteBtn.addActionListener(e -> {
-            try {
-                checkSelectedRow(dataTable);
-                tableModel.removeRow(dataTable.getSelectedRow());
-            } catch (NoRowSelectedException ex) {
-                JOptionPane.showMessageDialog(mainFrame, ex.getMessage(), "Ошибка удаления", JOptionPane.WARNING_MESSAGE);
-            }
-        });
+		deleteBtn.addActionListener(e -> {
+			try {
+				checkSelectedRow(dataTable);
+				tableModel.removeRow(dataTable.getSelectedRow());
+			} catch (NoRowSelectedException ex) {
+				JOptionPane.showMessageDialog(mainFrame, ex.getMessage(), "Ошибка удаления", JOptionPane.WARNING_MESSAGE);
+			}
+		});
 
-        toolBar.add(openBtn);
-        toolBar.add(saveBtn);
-        toolBar.add(addBtn);
-        toolBar.add(editBtn);
-        toolBar.add(deleteBtn);
-        
-        mainFrame.add(toolBar, BorderLayout.NORTH);
-    }
+		toolBar.add(openBtn);
+		toolBar.add(saveBtn);
+		toolBar.add(addBtn);
+		toolBar.add(editBtn);
+		toolBar.add(deleteBtn);
+		
+		mainFrame.add(toolBar, BorderLayout.NORTH);
+	}
 
-    private void create_table() {
-        String[] columns = {"ID", "ФИО Клиента", "Адрес доставки", "Издание", "Почтальон"};
-        Object[][] data = {
-            {"0001", "Иванов И. И.", "Невский пр., д. 12, кв. 4", "Газета 'СПб ведомости'", "Смирнов А. В."},
-            {"0002", "Петров П. С.", "ул. Пушкина, д. 5, кв. 18", "Журнал 'Наука и жизнь'", "Васильева Е. Н."},
-            {"0003", "Сидорова А. М.", "Садовая ул., д. 28, кв. 2", "Газета 'АиФ'", "Смирнов А. В."},
-            {"0004", "Кузнецов Д. В.", "пер. Гривцова, д. 3, кв. 11", "Журнал 'Вокруг света'", "Николаев К. М."},
-            {"0005", "Михайлова О. И.", "ул. Марата, д. 45, кв. 9", "Газета 'Коммерсантъ'", "Васильева Е. Н."}
-        };
-        tableModel = new DefaultTableModel(data, columns);
-        dataTable = new JTable(tableModel);
-        scrollPane = new JScrollPane(dataTable);
-        mainFrame.add(scrollPane, BorderLayout.CENTER);
-    }
+	private void create_table() {
+		String[] columns = {"ID", "ФИО Клиента", "Адрес доставки", "Издание", "Почтальон"};
+		Object[][] data = {
+			{"0001", "Иванов И. И.", "Невский пр., д. 12, кв. 4", "Газета 'СПб ведомости'", "Смирнов А. В."},
+			{"0002", "Петров П. С.", "ул. Пушкина, д. 5, кв. 18", "Журнал 'Наука и жизнь'", "Васильева Е. Н."},
+			{"0003", "Сидорова А. М.", "Садовая ул., д. 28, кв. 2", "Газета 'АиФ'", "Смирнов А. В."},
+			{"0004", "Кузнецов Д. В.", "пер. Гривцова, д. 3, кв. 11", "Журнал 'Вокруг света'", "Николаев К. М."},
+			{"0005", "Михайлова О. И.", "ул. Марата, д. 45, кв. 9", "Газета 'Коммерсантъ'", "Васильева Е. Н."}
+		};
+		tableModel = new DefaultTableModel(data, columns);
+		dataTable = new JTable(tableModel);
+		scrollPane = new JScrollPane(dataTable);
+		mainFrame.add(scrollPane, BorderLayout.CENTER);
+	}
 
-    /**
-     * Creates the bottom panel for the UI application.
-     * Implements searching clients by name with exception handling for empty search queries.
-     */
-    private void create_bottom_panel() {
-        filterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        viewCombo = new JComboBox<>(new String[]{
-            "Подписки клиентов",
-            "Номенклатура газет и журналов",
-            "Список почтальонов",
-            "Отчет о доставке"
-        });
-        filterPanel.add(viewCombo);
+	/**
+	 * Creates the bottom panel for the UI application.
+	 * Implements searching clients by name with exception handling for empty search queries.
+	 */
+	private void create_bottom_panel() {
+		filterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		viewCombo = new JComboBox<>(new String[]{
+			"Подписки клиентов",
+			"Номенклатура газет и журналов",
+			"Список почтальонов",
+			"Отчет о доставке"
+		});
+		filterPanel.add(viewCombo);
 
-        searchField = new JTextField("Поиск по ФИО или издан...", 22);
-        searchBtn = new JButton("Найти");
+		searchField = new JTextField("Поиск по ФИО или издан...", 22);
+		searchBtn = new JButton("Найти");
 
-        searchBtn.addActionListener(l -> {
-            try {
-                checkSearchName(searchField);
-                Vector<String> found_ids = new Vector<>();
-                String query_name = searchField.getText();
-                for (int i = 0; i < tableModel.getRowCount(); i++) {
-                    String name = (String) tableModel.getValueAt(i, 1);
-                    if (name != null && name.contains(query_name)) {
-                        found_ids.add((String) tableModel.getValueAt(i, 0));
-                    }
-                }
-                JOptionPane.showMessageDialog(mainFrame, "ID клиентов с подходящим ФИО:\n" + String.join(", ", found_ids));
-            } catch (EmptySearchNameException ex) {
-                JOptionPane.showMessageDialog(mainFrame, ex.getMessage(), "Ошибка поиска", JOptionPane.WARNING_MESSAGE);
-            } catch (NullPointerException ex) {
-                JOptionPane.showMessageDialog(mainFrame, "java.lang.NullPointerException", "Ошибка", JOptionPane.ERROR_MESSAGE);
-            }
-        });
+		searchBtn.addActionListener(l -> {
+			try {
+				checkSearchName(searchField);
+				Vector<String> found_ids = new Vector<>();
+				String query_name = searchField.getText();
+				for (int i = 0; i < tableModel.getRowCount(); i++) {
+					String name = (String) tableModel.getValueAt(i, 1);
+					if (name != null && name.contains(query_name)) {
+						found_ids.add((String) tableModel.getValueAt(i, 0));
+					}
+				}
+				JOptionPane.showMessageDialog(mainFrame, "ID клиентов с подходящим ФИО:\n" + String.join(", ", found_ids));
+			} catch (EmptySearchNameException ex) {
+				JOptionPane.showMessageDialog(mainFrame, ex.getMessage(), "Ошибка поиска", JOptionPane.WARNING_MESSAGE);
+			}
+		});
 
-        filterPanel.add(searchField);
-        filterPanel.add(searchBtn);
-        mainFrame.add(filterPanel, BorderLayout.SOUTH);
-    }
+		filterPanel.add(searchField);
+		filterPanel.add(searchBtn);
+		mainFrame.add(filterPanel, BorderLayout.SOUTH);
+	}
 
-    public void show() {
-        mainFrame = new JFrame("Работник почты");
-        mainFrame.setSize(850, 500);
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainFrame.setLayout(new BorderLayout());
+	public void show() {
+		mainFrame = new JFrame("Работник почты");
+		mainFrame.setSize(850, 500);
+		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		mainFrame.setLayout(new BorderLayout());
 
-        create_toolbar();
-        create_table();
-        create_bottom_panel();
+		create_toolbar();
+		create_table();
+		create_bottom_panel();
 
-        mainFrame.setVisible(true);
-    }
+		mainFrame.setVisible(true);
+	}
 
-    public static void main(String[] args) {
-        new PostWorker().show();
-    }
+	public static void main(String[] args) {
+		new PostWorker().show();
+	}
 }

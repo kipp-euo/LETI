@@ -1,0 +1,5 @@
+javac -d bin src/edu/java/lab2/PostWorker.java 
+java -cp bin edu.java.lab2.PostWorker
+javadoc -d doc -sourcepath src -subpackages edu.java.lab2
+
+javac -d bin src/edu/java/lab2/PostWorker.java && java -cp bin edu.java.lab2.PostWorker

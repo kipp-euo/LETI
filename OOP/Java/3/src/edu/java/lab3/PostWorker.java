@@ -1,4 +1,4 @@
-package edu.java.lab2;
+package edu.java.lab3;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<subscriptions>
+    <subscription address="Невский пр., д. 12, кв. 4" client="Иванов И. И." id="0001" postman="Смирнов А. В." publication="Газета 'СПб ведомости'"/>
+    <subscription address="ул. Марата, д. 45, кв. 9" client="Михайлова О. И." id="0005" postman="Васильева Е. Н." publication="Газета 'Коммерсантъ'"/>
+</subscriptions>

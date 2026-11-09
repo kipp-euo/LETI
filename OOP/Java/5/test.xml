@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<subscriptions>
+    <subscription id="0001" client="Иванов И. И." address="Невский пр., д. 12, кв. 4" publication="Газета 'СПб ведомости'" postman="Смирнов А. В."/>
+    <subscription id="0002" client="Петров П. С." address="ул. Пушкина, д. 5, кв. 18" publication="Журнал 'Наука и жизнь'" postman="Васильева Е. Н."/>
+    <subscription id="0003" client="Сидорова А. М." address="Садовая ул., д. 28, кв. 2" publication="Газета 'АиФ'" postman="Смирнов А. В."/>
+    <subscription id="0004" client="Кузнецов Д. В." address="пер. Гривцова, д. 3, кв. 11" publication="Журнал 'Вокруг света'" postman="Николаев К. М."/>
+    <subscription id="0005" client="Михайлова О. И." address="ул. Марата, д. 45, кв. 9" publication="Газета 'Коммерсантъ'" postman="Васильева Е. Н."/>
+</subscriptions>

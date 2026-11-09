@@ -1,15 +1,17 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
 
 
 int main()
 {
-	// std::vector<int> data = {1, 2, 3, 4, 5};
-	std::vector<char> chars(500);
-	for (auto elem : chars) {
-		std::cout << elem << ' ';
+	std::vector<int> aboba = {1, 221, 3, -4, 5};
+	// std::sort(aboba.begin(), aboba.end());
+	std::ranges::sort(aboba);
+
+	for (auto elem : aboba) {
+		std::cout << elem << '\n';
 	}
-	std::cout << '\n';
 }
 
 

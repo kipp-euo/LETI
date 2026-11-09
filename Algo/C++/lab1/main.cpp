@@ -53,20 +53,20 @@ void benchmark(uint64_t A, uint64_t B, uint64_t C, uint64_t D);
 int main()
 {
 	// For cyrillic letters
-	/* std::locale::global(std::locale(""));
-	std::wcout.imbue(std::locale("")); */
+	std::locale::global(std::locale(""));
+	std::wcout.imbue(std::locale(""));
 
 	setlocale(LC_ALL, "Russian");
 
 	srand((unsigned)time(NULL));
 
 	// // Example
-	wchar_t A[33] = L"аб";
-	wchar_t B[33] = L"аб";
-	wchar_t C[33] = L"ав";
-	wchar_t D[33] = L"бг";
+	// wchar_t A[33] = L"аб";
+	// wchar_t B[33] = L"аб";
+	// wchar_t C[33] = L"ав";
+	// wchar_t D[33] = L"бг";
 
-	// // Example from input
+	// Example from input
 	// wchar_t A[33], B[33], C[33], D[33];
 	// input_set(A, L"A");
 	// input_set(B, L"B");
@@ -74,11 +74,11 @@ int main()
 	// input_set(D, L"D");
 
 	// Random generated examples
-	//wchar_t A[33], B[33], C[33], D[33];
-	//set_fill_random(A);
-	//set_fill_random(B);
-	//set_fill_random(C);
-	//set_fill_random(D);
+	wchar_t A[33], B[33], C[33], D[33];
+	set_fill_random(A);
+	set_fill_random(B);
+	set_fill_random(C);
+	set_fill_random(D);
 
 	std::wcout << "Sets:\n";
 	std::wcout << "A = ";
@@ -204,15 +204,6 @@ uint64_t arr_to_qword(const wchar_t (&arr)[33])
 	return out;
 }
 
-bool contains(const wchar_t (&arr)[33], wchar_t elem)
-{
-	for (size_t i = 0; arr[i] != '\0'; i++) {
-		if (arr[i] == elem) {
-			return true;
-		}
-	}
-	return false;
-}
 bool contains(const List* l, wchar_t elem)
 {
 	for (; l != nullptr; l = l->next) {
@@ -231,8 +222,8 @@ void calc_set(const wchar_t (&A)[33], const wchar_t (&B)[33],
 	for (size_t j = 0; C[j] != '\0'; j++) {
 		if ((contains(A, C[j]) && contains(B, C[j])) && !contains(D, C[j])) {
 			if (!contains(out, C[j])) {
-                out[i++] = C[j];
-            }
+				out[i++] = C[j];
+			}
 		}
 	}
 	out[i] = '\0';

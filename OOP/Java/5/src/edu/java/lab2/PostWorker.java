@@ -153,8 +153,8 @@ public class PostWorker {
 
 	/**
 	 * Saves the content of the data table to an XML file.
-	 * The root element is &lt;subscriptions&gt;, every table row becomes
-	 * a &lt;subscription&gt; element whose attributes hold the cell values.
+	 * The root element is <subscriptions>, every table row becomes
+	 * a <subscription> element whose attributes hold the cell values.
 	 * Shows an error message if the document cannot be built or written.
 	 */
 	private void saveToFile() {

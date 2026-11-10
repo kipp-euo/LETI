@@ -161,19 +161,30 @@ public:
 		const size_t cell = max_data_width + 1;
 		const size_t depth = levels.size();
 
+		std::vector<std::string> lines = {};
+
 		for (size_t i = 0; i < depth; i++) {
 			const size_t slot = cell << (depth - 1 - i);
 			std::string line;
 
 			for (const Node* n : levels[i]) {
 				const std::string s = n ? std::to_string(n->data) : "";
-				const size_t left_pad = (slot - s.length()) / 2;
+				const char dot_left = n && n->left ? '`' : ' ';
+				const char dot_right = n && n->right ? '`' : ' ';
+
+				const size_t left_pad = (slot - s.length()) / 4;
 				line += std::string(left_pad, ' ');
+				line += std::string(left_pad, dot_left);
 				line += s;
+				line += std::string(slot - s.length() - left_pad, dot_right);
 				line += std::string(slot - s.length() - left_pad, ' ');
 			}
 
-			line.erase(line.find_last_not_of(' ') + 1);
+			// line.erase(line.find_last_not_of('.') + 1);
+			lines.push_back(line);
+		}
+		std::reverse(lines.begin(), lines.end());
+		for (const auto& line : lines) {
 			std::cout << line << '\n';
 		}
 	}

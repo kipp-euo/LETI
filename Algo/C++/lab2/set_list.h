@@ -16,12 +16,12 @@ private:
 		Node(wchar_t e, Node* n = nullptr) : el(e), next(n) {}
 		~Node() { delete next; }
 		
-		void* operator new(size_t size) {
+		/* void* operator new(size_t size) {
 			return ::operator new(size);
 		}
 		void operator delete(void* p) noexcept {
 			::operator delete(p);
-		}
+		} */
 	};
 	Node* head;
 
@@ -69,13 +69,17 @@ public:
 	}
 
 	void benchmark(const SetList& A, const SetList& B, const SetList& C, const SetList& D) {
+		const int iterations = 1000000;
+		
 		auto t_start = std::chrono::high_resolution_clock::now();
 
-		this->calc_set(A, B, C, D);
+		for (int i = 0; i < iterations; i++) {
+			this->calc_set(A, B, C, D);
+		}
 
 		auto t_end = std::chrono::high_resolution_clock::now();
 		double time_elapsed = std::chrono::duration<double, std::milli>(t_end - t_start).count();
-		std::wcout << L"Time elapsed (SetList): " << time_elapsed << L" ms\n";
+		std::wcout << L"Time elapsed(SetList) (" << iterations << L" iterations): " << time_elapsed/iterations << L" ms\n";
 		std::wcout << L"Resulting set E: ";
 		this->print_set();
 	}

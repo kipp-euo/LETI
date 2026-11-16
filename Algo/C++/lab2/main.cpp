@@ -1,8 +1,8 @@
 #include <clocale>
 // Uncomment one
 
-// #include "set_array.h"
-// #define Set SetArray
+#include "set_array.h"
+#define Set SetArray
 
 // #include "set_list.h"
 // #define Set SetList
@@ -10,9 +10,8 @@
 // #include "set_bitarray.h"
 // #define Set SetBitArray
 
-#include "set_word.h" 
-#define Set SetWord
-
+// #include "set_word.h" 
+// #define Set SetWord
 
 int main()
 {
@@ -22,10 +21,10 @@ int main()
 
 	srand((unsigned)time(NULL));
 
-	wchar_t A[33] = L"абв";
-	wchar_t B[33] = L"аб";
-	wchar_t C[33] = L"ав";
-	wchar_t D[33] = L"г";
+	wchar_t A[33] = L"абвгдежзийклмноп";
+	wchar_t B[33] = L"абвгдежзрстуфхцч";
+	wchar_t C[33] = L"абвдшщыьэюяабвг";
+	wchar_t D[33] = L"дежзклинопшщыьэюя";
 
 	// Example from input
 	// wchar_t A[33], B[33], C[33], D[33];

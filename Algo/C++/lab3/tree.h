@@ -88,6 +88,19 @@ public:
 		make_symmetric_marking(root, counter);
 	}
 
+	void make_test_tree() {
+		delete root;
+		root = new Node(0); // A
+		root->left = new Node(0); // B
+		root->right = new Node(0); // C
+		root->left->left = new Node(0); // D
+		root->right->right = new Node(0); // E
+
+		max_data_width = 1;
+		int counter = 0;
+		make_symmetric_marking(root, counter);
+	}
+
 	bool exist() const { return root != nullptr; }
 
 	// Обход в ширину + вычисление Варианта 7

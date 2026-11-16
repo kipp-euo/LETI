@@ -58,14 +58,17 @@ public:
 
 	void benchmark(const SetArray& A,const SetArray& B, const SetArray& C, const SetArray& D)
 	{
+		const int iterations = 1000000;
+		
 		auto t_start = std::chrono::high_resolution_clock::now();
 
-		this->calc_set(A, B, C, D);
+		for (int i = 0; i < iterations; i++) {
+			this->calc_set(A, B, C, D);
+		}
 
 		auto t_end = std::chrono::high_resolution_clock::now();
-		double time_elapsed = std::chrono::duration<double, std::milli>(
-				t_end - t_start).count();
-		std::wcout << L"Time elapsed (SetArray): " << time_elapsed << '\n';
+		double time_elapsed = std::chrono::duration<double, std::milli>(t_end - t_start).count();
+		std::wcout << L"Time elapsed(SetArray) (" << iterations << L" iterations): " << time_elapsed/iterations << L" ms\n";
 		std::wcout << L"Resulting set E: ";
 		this->print_set();
 	}
